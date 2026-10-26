@@ -1,72 +1,53 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-<style>
-    body { width: 500px; padding: 20px; font-family: 'Tahoma', sans-serif; background: #f4f9f4; color: #333; }
-    
-    /* اصلاح ساختار: استفاده از row-reverse برای آوردن عکس به سمت چپ در حالت RTL */
-    .main-container { 
-        display: flex; 
-        align-items: flex-start; 
-        gap: 15px; 
-        margin-bottom: 20px; 
-        flex-direction: row-reverse; 
-    }
-    
-    .img-box { width: 140px; height: 120px; flex-shrink: 0; }
-    .img-box img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
-    
-    .settings-side { flex: 1; text-align: right; } /* متن‌ها راست‌چین باقی می‌مانند */
-    h3 { color: #218838; margin: 0 0 10px 0; font-size: 18px; }
-    
-    .mode-selector { margin-bottom: 10px; display: flex; gap: 10px; }
-    .mode-selector label { cursor: pointer; padding: 6px 10px; border: 1px solid #28a745; border-radius: 4px; color: #218838; font-size: 13px; }
-    
-    .btn { background: #28a745; color: white; padding: 10px 15px; border: none; cursor: pointer; border-radius: 4px; width: 100%; font-size: 14px; margin-bottom: 10px; }
-    .btn:hover { background: #218838; }
-    
-    textarea { width: 100%; height: 150px; direction: ltr; font-family: monospace; border: 1px solid #ccc; border-radius: 4px; padding: 5px; }
-    #preview { border: 1px solid #ccc; padding: 10px; background: white; margin-top: 5px; min-height: 50px; border-radius: 4px; }
-    #spinner { display: none; color: #218838; font-weight: bold; margin: 10px 0; text-align: center; }
-    
-    #historyList { padding-right: 20px; font-size: 13px; }
-    #historyList li { margin-bottom: 8px; color: #28a745; cursor: pointer; text-decoration: underline; }
-
-    .footer { text-align: center; margin-top: 20px; font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 10px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تبدیل ورد به HTML</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-
-    <!-- ساختار عکس در چپ و تنظیمات در راست -->
-    <div class="main-container">
-        <div class="img-box">
-            <img src="icon_green.png" alt="logo">
-        </div>
-        <div class="settings-side">
-            <h3>ابزار حرفه‌ای ورد به HTML</h3>
-            <div class="mode-selector">
-                <label><input type="radio" name="mode" value="js" checked> <span>حالت JS</span></label>
-                <label><input type="radio" name="mode" value="php"> <span>حالت PHP</span></label>
-            </div>
-            <input type="file" id="uploadFile" accept=".docx" />
-        </div>
-    </div>
-    
-    <div id="spinner">⏳ در حال پردازش فایل، لطفاً منتظر بمانید...</div>
-    
-    <button class="btn" id="copyBtn">📋 کپی کد HTML</button>
-    <textarea id="outputHtml" placeholder="کد HTML پس از تبدیل اینجا نمایش داده می‌شود..."></textarea>
-    
-    <h4>پیش‌نمایش زنده:</h4>
-    <div id="preview"></div>
-
-    <h4>تاریخچه اخیر (کلیک کنید):</h4>
-    <ul id="historyList"></ul>
-
-    <div class="footer">Developed by Shirin Jafari</div>
-
-    <script src="mammoth.browser.min.js"></script>
-    <script src="popup.js"></script>
+  <main class="app">
+    <header class="header">
+      <img class="logo" src="icon_green.png" width="52" height="52" alt="">
+      <div><span class="eyebrow" lang="en">WORD TO HTML</span><h1>تبدیل ورد به HTML</h1><p>از سند ورد تا کد تمیز، در چند ثانیه</p></div>
+      <span class="badge">نسخه ۱.۱</span>
+    </header>
+    <section class="card setup" aria-label="تنظیمات تبدیل">
+      <div class="section-row"><h2>شروع تبدیل</h2>
+        <fieldset class="mode-selector"><legend class="sr-only">حالت خروجی</legend>
+          <label><input type="radio" name="mode" value="js" checked><span>حالت <b lang="en">JS</b></span></label>
+          <label><input type="radio" name="mode" value="php"><span>حالت <b lang="en">PHP</b></span></label>
+        </fieldset>
+      </div>
+      <label class="file-picker" for="uploadFile">
+        <input type="file" id="uploadFile" accept=".docx" aria-describedby="fileName">
+        <span class="file-icon" aria-hidden="true">↥</span>
+        <span class="file-description"><strong>انتخاب فایل Word</strong><span id="fileName" dir="auto">فایل با فرمت .docx را انتخاب کنید</span></span>
+        <span class="file-action" aria-hidden="true">انتخاب فایل</span>
+      </label>
+      <div id="spinner" role="status" hidden><span class="loader" aria-hidden="true"></span>در حال تبدیل سند…</div>
+    </section>
+    <section class="card output" aria-labelledby="outputTitle">
+      <div class="section-row"><h2 id="outputTitle"><span class="section-icon" aria-hidden="true">&lt;/&gt;</span>خروجی HTML</h2><button id="copyBtn" class="copy-button" disabled><span aria-hidden="true">⧉</span> کپی کد</button></div>
+      <label class="sr-only" for="outputHtml">کد HTML خروجی</label>
+      <textarea id="outputHtml" dir="ltr" spellcheck="false" placeholder="<!-- کد HTML سند شما اینجا نمایش داده می‌شود -->"></textarea>
+      <div class="editor-footer"><span class="status-dot"></span><span id="outputStatus" role="status">منتظر انتخاب فایل</span><span class="language" lang="en">HTML</span></div>
+    </section>
+    <section class="card" aria-labelledby="previewTitle">
+      <div class="section-row"><h2 id="previewTitle">پیش‌نمایش زنده</h2><span class="subtle">نمای نهایی محتوا</span></div>
+      <div id="preview" tabindex="0" aria-label="پیش‌نمایش سند"></div>
+      <div id="previewEmpty" class="empty-state"><span aria-hidden="true">▤</span><p>سند شما اینجا جان می‌گیرد</p><small>بعد از تبدیل، پیش‌نمایش محتوا را ببینید</small></div>
+    </section>
+    <section class="card" aria-labelledby="historyTitle">
+      <div class="section-row"><h2 id="historyTitle">تاریخچه اخیر</h2><span class="subtle">۱۰ خروجی آخر</span></div>
+      <ul id="historyList" aria-label="خروجی‌های ذخیره‌شده"></ul>
+      <p id="historyEmpty" class="history-empty">هنوز خروجی ذخیره نشده؛ با کپی کد، اینجا ثبت می‌شود.</p>
+    </section>
+    <footer dir="ltr">Developed by <strong>Shirin Jafari</strong></footer>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="mammoth.browser.min.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>
