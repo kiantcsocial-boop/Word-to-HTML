@@ -12,7 +12,20 @@ function showToast(message, error = false) {
     toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
 }
 
+function linksInNewTab(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('a[href]').forEach(link => {
+        link.setAttribute('target', '_blank');
+        const rel = new Set((link.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+        rel.delete('opener');
+        rel.add('noopener');
+        link.setAttribute('rel', [...rel].join(' '));
+    });
+    return doc.body.innerHTML;
+}
+
 function displayOutput(html) {
+    html = html.trim() ? linksInNewTab(html) : html;
     outputHtml.value = html;
     document.getElementById('preview').innerHTML = html;
     document.getElementById('previewEmpty').hidden = Boolean(html.trim());
@@ -105,7 +118,11 @@ function processAndDisplay(html) {
         }
         let p = cell.querySelector('p');
         if (p) {
-            cell.textContent = p.textContent;
+            if (p.querySelector('a[href]')) {
+                cell.innerHTML = p.innerHTML;
+            } else {
+                cell.textContent = p.textContent;
+            }
         }
     });
 

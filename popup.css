@@ -1,7 +1,8 @@
 :root{color-scheme:light;--green:#047857;--green-dark:#065f46;--tint:#ecfdf5;--ink:#182b27;--muted:#60756d;--line:#e2ebe6;--radius:16px}
 
 *{box-sizing:border-box}
-body{margin:0;width:540px;max-width:100vw;background:#f3f7f5;color:var(--ink);font:13px/1.7 Tahoma,"Segoe UI",sans-serif}
+html{width:540px;min-width:360px;max-width:800px;overflow-x:hidden}
+body{margin:0;width:100%;min-width:0;background:#f3f7f5;color:var(--ink);font:13px/1.7 Tahoma,"Segoe UI",sans-serif}
 button,input,textarea{font:inherit}
 button,label{ -webkit-tap-highlight-color:transparent}
 button{cursor:pointer}
@@ -82,3 +83,38 @@ footer strong{font-weight:500;color:#436756}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 
+
+/* Size the extension document explicitly: viewport-relative root sizing can
+   collapse Chrome's auto-sized action popup before its first layout. */
+.header{padding:4px 2px 12px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.header>div{flex:1;min-width:0}
+.logo{flex:0 0 48px;width:48px;height:48px}
+.header h1{white-space:nowrap;font-size:20px}
+.header p{font-size:11px;line-height:1.9}
+.badge{background:var(--tint);border:1px solid #d1eadc}
+.app{gap:14px;padding:20px}
+.card{border-radius:14px;padding:16px;box-shadow:0 2px 6px #183b2b05}
+.section-row{min-height:28px;flex-wrap:wrap}
+h2{font-size:13px;white-space:nowrap}
+.copy-button{min-height:34px;padding:6px 14px;flex-shrink:0}
+.file-picker{min-height:84px;border-radius:10px}
+.file-icon{flex-shrink:0}
+.file-description span{max-width:100%}
+.output textarea{height:145px;line-height:1.9;background:#f6f9f7;font-size:12px}
+#preview{min-height:60px;max-height:200px;padding:2px}
+#preview a{color:var(--green);text-underline-offset:3px}
+#preview a:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.empty-state{padding:12px 0 14px}
+.empty-state>span{display:inline-grid;place-items:center;width:36px;height:36px;background:var(--tint);border-radius:10px;color:var(--green)}
+.history-item{min-height:40px}
+.history-time{white-space:nowrap}
+@media(max-width:440px){
+  .app{padding:14px;gap:12px}
+  .header h1{font-size:17px}
+  .card{padding:12px}
+  .file-description span{max-width:210px}
+}
+
+/* Small physical screens use their available width; popup viewport sizing
+   stays independent of the initially narrow extension viewport. */
+@media(max-device-width:540px){html{width:100%;min-width:320px}}
